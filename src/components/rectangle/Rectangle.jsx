@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import { Rect, Transformer } from "react-konva";
 
-function Rectangle({ rectangle, handleSelect, strokeColor, isSelected }) {
+function Rectangle({ rectangle, onSelect, strokeColor, isSelected }) {
   const transformerref = React.useRef();
   const rectRef = React.useRef();
-  console.log(isSelected);
   useEffect(() => {
     if (isSelected) {
       transformerref.current.nodes([rectRef.current]);
-      transformerref.current.getLayer().batchDraw();
     }
   }, [isSelected]);
 
@@ -24,8 +22,10 @@ function Rectangle({ rectangle, handleSelect, strokeColor, isSelected }) {
         height={rectangle.height}
         width={rectangle.width}
         draggable="true"
-        onClick={handleSelect}
-        onTap={handleSelect}
+        onClick={onSelect}
+        onTap={onSelect}
+        onMouseUp={onSelect}
+        onTouchEnd={onSelect}
       />
       {isSelected && <Transformer ref={transformerref} />}
     </>

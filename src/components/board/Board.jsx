@@ -15,6 +15,13 @@ function Board() {
 
   let strokeColor = "yellow";
 
+  const checkDeselect = (e) => {
+    const clickOnEmpty = e.target === e.target.getStage();
+    if(clickOnEmpty) {
+      setSelectId("");
+    }
+  }
+
   const onMouseDown = () => {
     const { x, y } = stageRef.current.getPointerPosition();
     painting.current = true;
@@ -51,7 +58,6 @@ function Board() {
   const onMouseUp = (e) => {
     painting.current = false;
     dispatch(selectTool(ACTIONS.SELECT));
-    setSelectId(e.target._id);
   };
   return (
     <Stage
@@ -64,20 +70,27 @@ function Board() {
       onTouchStart={onMouseDown}
       onTouchMove={onMouseMove}
       onTouchEnd={onMouseUp}
+      onClick={checkDeselect}
+      onTap={checkDeselect}
     >
       <Layer>
-        {rectangles.map((rectangle, i) => (
-          <Rectangle
-            key={i}
-            rectangle={rectangle}
-            handleSelect={() => {
-              setSelectId(rectangle.id);
-              dispatch(selectTool(ACTIONS.SELECT));
-            }}
-            strokeColor={strokeColor}
-            isSelected={selectId === rectangle.id}
-          />
-        ))}
+        {rectangles.map(
+          (rectangle, i) => (
+            console.log(rectangle.id),
+            (
+              <Rectangle
+                key={i}
+                rectangle={rectangle}
+                onSelect={() => {
+                  setSelectId(rectangle.id);
+                  dispatch(selectTool(ACTIONS.SELECT));
+                }}
+                strokeColor={strokeColor}
+                isSelected={selectId === rectangle.id}
+              />
+            )
+          )
+        )}
       </Layer>
     </Stage>
   );
