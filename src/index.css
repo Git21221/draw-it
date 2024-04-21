@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 html, body {
-  background-color: rgb(34, 34, 34);
+  background-color: rgb(29, 29, 29);
   color: white;
   box-sizing: border-box;
-
 }

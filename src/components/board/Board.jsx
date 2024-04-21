@@ -4,23 +4,26 @@ import { ACTIONS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTool } from "../../features/toolbarSlice";
 import Rectangle from "../rectangle/Rectangle.jsx";
+import { setSelectId } from "../../features/selectShapeSlice.js";
 
 function Board() {
   const { toolType } = useSelector((state) => state.toolbar);
+  const { selectId } = useSelector((state) => state.selectShape);
+  const { strokeWidth } = useSelector((state) => state.strokeWidth);
+  const { borderColor, fillColor } = useSelector((state) => state.color);
   const dispatch = useDispatch();
   const [rectangles, setRectangles] = React.useState([]);
-  const [selectId, setSelectId] = React.useState("");
   const stageRef = React.useRef(null);
   const painting = React.useRef(false);
 
-  let strokeColor = "yellow";
+  let strokeColor = borderColor;
 
   const checkDeselect = (e) => {
     const clickOnEmpty = e.target === e.target.getStage();
-    if(clickOnEmpty) {
-      setSelectId("");
+    if (clickOnEmpty) {
+      dispatch(setSelectId({ selectId: "" }));
     }
-  }
+  };
 
   const onMouseDown = () => {
     const { x, y } = stageRef.current.getPointerPosition();
@@ -34,7 +37,6 @@ function Board() {
           y,
           width: 0,
           height: 0,
-          fillColor: "seagreen",
         },
       ]);
     }
@@ -74,23 +76,19 @@ function Board() {
       onTap={checkDeselect}
     >
       <Layer>
-        {rectangles.map(
-          (rectangle, i) => (
-            console.log(rectangle.id),
-            (
-              <Rectangle
-                key={i}
-                rectangle={rectangle}
-                onSelect={() => {
-                  setSelectId(rectangle.id);
-                  dispatch(selectTool(ACTIONS.SELECT));
-                }}
-                strokeColor={strokeColor}
-                isSelected={selectId === rectangle.id}
-              />
-            )
-          )
-        )}
+        {rectangles.map((rectangle, i) => (
+          <Rectangle
+            key={i}
+            rectangle={rectangle}
+            isSelected={selectId === rectangle.id}
+            onSelect={() => {
+              dispatch(setSelectId({ selectId: rectangle.id }));
+              dispatch(selectTool(ACTIONS.SELECT));
+            }}
+            strokeColor={strokeColor}
+            fillColor={fillColor}
+          />
+        ))}
       </Layer>
     </Stage>
   );

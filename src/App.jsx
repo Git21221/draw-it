@@ -1,5 +1,6 @@
 import "./App.css";
 import Board from "./components/board/Board";
+import Controlbar from "./components/controlroom/Controlbar";
 import Toolbar from "./components/toolbar/Toolbar";
 function App() {
 
@@ -7,6 +8,7 @@ function App() {
     <>
       <Board />
       <Toolbar />
+      <Controlbar />
     </>
   )
 }

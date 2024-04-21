@@ -7,19 +7,22 @@ import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import "./toolbar.css";
+import { setSelectId } from "../../features/selectShapeSlice";
 
 function Toolbar() {
   const dispatch = useDispatch();
   const { toolType } = useSelector((state) => state.toolbar);
-  
+  const { selectId } = useSelector((state) => state.selectShape);
+
   return (
-    <div className="absolute left-1/2 bottom-5 bg-neutral-700 flex gap-4 p-2 text-white z-50 rounded-lg -translate-x-1/2 toolbar">
+    <div className="absolute left-1/2 bottom-5 bg-neutral-800 flex gap-4 p-2 text-white z-50 rounded-lg -translate-x-1/2 toolbar">
       <div
         className={`selectAll  p-2 rounded-lg ${
           toolType === "SELECT" ? "bg-sky-600" : ""
         }`}
         onClick={() => {
           dispatch(selectTool("SELECT"));
+          dispatch(setSelectId({ selectId: "" }));
         }}
       >
         <HighlightAltIcon />
@@ -28,7 +31,10 @@ function Toolbar() {
         className={`rectangle p-2 rounded-lg ${
           toolType === "RECTANGLE" ? "bg-sky-600" : ""
         }`}
-        onClick={() => dispatch(selectTool("RECTANGLE"))}
+        onClick={() => {
+          dispatch(selectTool("RECTANGLE"));
+          dispatch(setSelectId({ selectId: "" }));
+        }}
       >
         <CheckBoxOutlineBlankIcon />
       </div>
@@ -36,7 +42,10 @@ function Toolbar() {
         className={`circle p-2 rounded-lg ${
           toolType === "CIRCLE" ? "bg-sky-600" : ""
         }`}
-        onClick={() => dispatch(selectTool("CIRCLE"))}
+        onClick={() => {
+          dispatch(selectTool("CIRCLE"));
+          dispatch(setSelectId({ selectId: "" }));
+        }}
       >
         <CircleOutlinedIcon />
       </div>
@@ -44,7 +53,10 @@ function Toolbar() {
         className={`arrow p-2 rounded-lg  ${
           toolType === "ARROW" ? "bg-sky-600" : ""
         }`}
-        onClick={() => dispatch(selectTool("ARROW"))}
+        onClick={() => {
+          dispatch(selectTool("ARROW"));
+          dispatch(setSelectId({ selectId: "" }));
+        }}
       >
         <ArrowRightAltOutlinedIcon />
       </div>
@@ -52,7 +64,10 @@ function Toolbar() {
         className={`pencil p-2 rounded-lg  ${
           toolType === "PENCIL" ? "bg-sky-600" : ""
         }`}
-        onClick={() => dispatch(selectTool("PENCIL"))}
+        onClick={() => {
+          dispatch(selectTool("PENCIL"));
+          dispatch(setSelectId({ selectId: "" }));
+        }}
       >
         <CreateOutlinedIcon />
       </div>

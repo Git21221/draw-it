@@ -1,7 +1,15 @@
 import React, { useEffect } from "react";
 import { Rect, Transformer } from "react-konva";
+import { useSelector } from "react-redux";
 
-function Rectangle({ rectangle, onSelect, strokeColor, isSelected }) {
+function Rectangle({
+  rectangle,
+  onSelect,
+  strokeColor,
+  isSelected,
+  fillColor,
+}) {
+  const {strokeWidth} = useSelector((state) => state.strokeWidth);
   const transformerref = React.useRef();
   const rectRef = React.useRef();
   useEffect(() => {
@@ -14,11 +22,12 @@ function Rectangle({ rectangle, onSelect, strokeColor, isSelected }) {
     <>
       <Rect
         ref={rectRef}
+        cornerRadius={20}
         x={rectangle.x}
         y={rectangle.y}
         stroke={strokeColor}
-        strokeWidth={10}
-        fill={rectangle.fillColor}
+        strokeWidth={strokeWidth}
+        fill={fillColor}
         height={rectangle.height}
         width={rectangle.width}
         draggable="true"
