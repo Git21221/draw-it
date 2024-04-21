@@ -9,7 +9,6 @@ import { setSelectId } from "../../features/selectShapeSlice.js";
 function Board() {
   const { toolType } = useSelector((state) => state.toolbar);
   const { selectId } = useSelector((state) => state.selectShape);
-  const { strokeWidth } = useSelector((state) => state.strokeWidth);
   const { borderColor, fillColor } = useSelector((state) => state.color);
   const dispatch = useDispatch();
   const [rectangles, setRectangles] = React.useState([]);
