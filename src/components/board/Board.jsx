@@ -86,6 +86,9 @@ function Board() {
             }}
             strokeColor={strokeColor}
             fillColor={fillColor}
+            onDragMove={(e) => {
+              console.log(e.target.x(), e.target.y());
+            }}
           />
         ))}
       </Layer>

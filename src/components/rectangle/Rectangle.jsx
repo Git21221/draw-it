@@ -8,6 +8,7 @@ function Rectangle({
   strokeColor,
   isSelected,
   fillColor,
+  onDragMove,
 }) {
   const {strokeWidth} = useSelector((state) => state.strokeWidth);
   const transformerref = React.useRef();
@@ -35,6 +36,7 @@ function Rectangle({
         onTap={onSelect}
         onMouseUp={onSelect}
         onTouchEnd={onSelect}
+        onDragMove={onDragMove}
       />
       {isSelected && <Transformer ref={transformerref} />}
     </>
