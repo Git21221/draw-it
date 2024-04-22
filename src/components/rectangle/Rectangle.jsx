@@ -11,6 +11,7 @@ function Rectangle({
   onDragMove,
 }) {
   const {strokeWidth} = useSelector((state) => state.strokeWidth);
+  const {cornerRadius} = useSelector((state) => state.cornerRadius);
   const transformerref = React.useRef();
   const rectRef = React.useRef();
   useEffect(() => {
@@ -23,10 +24,10 @@ function Rectangle({
     <>
       <Rect
         ref={rectRef}
-        // cornerRadius={20}
         x={rectangle.x}
         y={rectangle.y}
         stroke={strokeColor}
+        cornerRadius={cornerRadius}
         strokeWidth={strokeWidth}
         fill={fillColor}
         height={rectangle.height}
