@@ -6,6 +6,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import TextFieldsIcon from "@mui/icons-material/TextFields";
 import "./toolbar.css";
 import { setSelectId } from "../../features/selectShapeSlice";
 
@@ -70,6 +71,17 @@ function Toolbar() {
         }}
       >
         <CreateOutlinedIcon />
+      </div>
+      <div
+        className={`text p-2 rounded-lg ${
+          toolType === "TEXT" ? "bg-sky-600" : ""
+        }`}
+        onClick={() => {
+          dispatch(selectTool("TEXT"));
+          dispatch(setSelectId({ selectId: "" }));
+        }}
+      >
+        <TextFieldsIcon />
       </div>
     </div>
   );

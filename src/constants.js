@@ -6,4 +6,5 @@ export const ACTIONS  = {
   PENCIL: 'PENCIL',
   SCRIBBLE: 'SCRIBBLE',
   LINE: 'LINE',
+  TEXT: 'TEXT',
 }
