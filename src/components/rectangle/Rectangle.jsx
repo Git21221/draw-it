@@ -22,7 +22,7 @@ function Rectangle({
     <>
       <Rect
         ref={rectRef}
-        cornerRadius={"20"}
+        // cornerRadius={20}
         x={rectangle.x}
         y={rectangle.y}
         stroke={strokeColor}
