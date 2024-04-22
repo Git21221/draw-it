@@ -25,7 +25,7 @@ function Board() {
       }
     });
     document.addEventListener("keyup", (e) => {
-      if (e.shiftKey) {
+      if (e.key === 'Shift') {
         setHoldShift(false);
       }
     });
