@@ -12,10 +12,24 @@ function Board() {
   const { borderColor, fillColor } = useSelector((state) => state.color);
   const dispatch = useDispatch();
   const [rectangles, setRectangles] = React.useState([]);
+  const [holdShift, setHoldShift] = React.useState(false);
   const stageRef = React.useRef(null);
   const painting = React.useRef(false);
 
   let strokeColor = borderColor;
+
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.shiftKey) {
+        setHoldShift(true);
+      }
+    });
+    document.addEventListener("keyup", (e) => {
+      if (e.shiftKey) {
+        setHoldShift(false);
+      }
+    });
+  }, []);
 
   const checkDeselect = (e) => {
     const clickOnEmpty = e.target === e.target.getStage();
@@ -40,7 +54,8 @@ function Board() {
       ]);
     }
   };
-  const onMouseMove = () => {
+
+  const onMouseMove = (e) => {
     if (!painting.current) return;
     const { x, y } = stageRef.current.getPointerPosition();
     if (toolType === ACTIONS.RECTANGLE) {
@@ -48,8 +63,13 @@ function Board() {
       setRectangles((rectangles) =>
         rectangles.map((rectangle, i) => {
           if (i === index) {
-            rectangle.width = x - rectangle.x;
-            rectangle.height = y - rectangle.y;
+            if (holdShift || e.touches) {
+              rectangle.width = x - rectangle.x;
+              rectangle.height = x - rectangle.x;
+            } else {
+              rectangle.width = x - rectangle.x;
+              rectangle.height = y - rectangle.y;
+            }
           }
           return rectangle;
         })
