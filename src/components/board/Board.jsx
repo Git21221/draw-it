@@ -1,29 +1,28 @@
 import React, { useEffect } from "react";
-import { Layer, Stage, Text, Transformer } from "react-konva";
+import { Layer, Line, Stage, Text, Transformer } from "react-konva";
 import { ACTIONS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTool } from "../../features/toolbarSlice";
 import Rectangle from "../rectangle/Rectangle.jsx";
 import { setSelectId } from "../../features/selectShapeSlice.js";
 import { Html } from "react-konva-utils";
-// import Textfield from "../text/Textfield.jsx";
+import Textfield from "../text/Textfield.jsx";
+import CircleShape from "../circle/CircleShape.jsx";
+import ArrowShape from "../arrow/ArrowShape.jsx";
 
 function Board() {
   const { toolType } = useSelector((state) => state.toolbar);
   const { selectId } = useSelector((state) => state.selectShape);
   const { borderColor, fillColor } = useSelector((state) => state.color);
-  const [isSelected, setIsSelected] = React.useState(false);
   const dispatch = useDispatch();
   const [rectangles, setRectangles] = React.useState([]);
+  const [circles, setCircles] = React.useState([]);
+  const [arrows, setArrows] = React.useState([]);
   const [texts, setTexts] = React.useState([]);
+  const [freeDraw, setFreeDraw] = React.useState([]);
   const [holdShift, setHoldShift] = React.useState(false);
   const stageRef = React.useRef(null);
   const painting = React.useRef(false);
-  const transformerref = React.useRef();
-  const textRef = React.useRef();
-  const inputRef = React.useRef();
-  const [text, setText] = React.useState("Hii");
-  const [isEditing, setIsEditing] = React.useState(false);
 
   let strokeColor = borderColor;
 
@@ -44,7 +43,6 @@ function Board() {
     const clickOnEmpty = e.target === e.target.getStage();
     if (clickOnEmpty) {
       dispatch(setSelectId({ selectId: "" }));
-      setIsSelected(false);
     }
   };
 
@@ -65,8 +63,6 @@ function Board() {
         ]);
         break;
       case ACTIONS.TEXT:
-        setIsEditing(true);
-        console.log(isEditing);
         setTexts((texts) => [
           ...texts,
           {
@@ -80,6 +76,34 @@ function Board() {
           },
         ]);
         break;
+      case ACTIONS.CIRCLE:
+        setCircles((circles) => [
+          ...circles,
+          {
+            id: circles.length + 1,
+            x,
+            y,
+            radiusX: 0,
+            radiusY: 0,
+            strokeWidth: 2,
+          },
+        ]);
+        break;
+      case ACTIONS.ARROW:
+        setArrows((arrows) => [
+          ...arrows,
+          {
+            id: arrows.length + 1,
+            x,
+            y,
+            points: [0, 0, 0, 0],
+            pointerLength: 10,
+            pointerWidth: 10,
+            fill: "black",
+            stroke: "white",
+            strokeWidth: 2,
+          },
+        ]);
     }
   };
 
@@ -87,7 +111,7 @@ function Board() {
     if (!painting.current) return;
     const { x, y } = stageRef.current.getPointerPosition();
     switch (toolType) {
-      case ACTIONS.RECTANGLE:
+      case ACTIONS.RECTANGLE: {
         const index = rectangles.length - 1;
         setRectangles((rectangles) =>
           rectangles.map((rectangle, i) => {
@@ -104,25 +128,47 @@ function Board() {
           })
         );
         break;
+      }
+      case ACTIONS.CIRCLE: {
+        const index = circles.length - 1;
+        setCircles((circles) =>
+          circles.map((circle, i) => {
+            if (i === index) {
+              if (holdShift || e.touches) {
+                circle.radiusX = x - circle.x;
+                circle.radiusY = x - circle.x;
+              } else {
+                circle.radiusX = x - circle.x;
+                circle.radiusY = y - circle.y;
+              }
+            }
+            return circle;
+          })
+        );
+        break;
+      }
+      case ACTIONS.ARROW: {
+        const index = arrows.length - 1;
+        setArrows((arrows) =>
+          arrows.map((arrow, i) => {
+            if (i === index) {
+              const updatedPoints = [...arrow.points];
+              updatedPoints[2] = x - arrow.x;
+              updatedPoints[3] = y - arrow.y;
+              return { ...arrow, points: updatedPoints };
+            }
+            return arrow;
+          })
+        );
+        break;
+      }
     }
   };
   const onMouseUp = (e) => {
-    if (toolType === ACTIONS.TEXT && isEditing) return;
     painting.current = false;
     dispatch(selectTool(ACTIONS.SELECT));
   };
 
-  useEffect(() => {
-    if (isSelected) {
-      transformerref.current.nodes([textRef.current]);
-    }
-  }, [isSelected]);
-
-  const handleDoubleClick = () => {
-    if (!isEditing) {
-      setIsEditing(true);
-    }
-  };
   return (
     <Stage
       width={window.innerWidth}
@@ -157,70 +203,71 @@ function Board() {
         ))}
         {/* for text */}
         {texts.map((textfield, i) => (
-          // <Textfield
-          //   key={i}
-          //   textfield={textfield}
-          //   onSelect={() => {
-          //     dispatch(setSelectId({ selectId: textfield.id }));
-          //     dispatch(selectTool(ACTIONS.SELECT));
-          //   }}
-          //   isSelected={selectId === textfield.id}
-          //   onDragMove={(e) => {
-          //     console.log(e.target.x(), e.target.y());
-          //   }}
-          // />
-
-          <React.Fragment key={i}>
-            {console.log(isEditing)}
-            {!isEditing && (
-              <Text
-                ref={textRef}
-                x={textfield.x}
-                y={textfield.y}
-                text={text}
-                fontSize={textfield.fontSize}
-                fontFamily={textfield.fontFamily}
-                fill={textfield.fill}
-                draggable="true"
-                onClick={() => {
-                  dispatch(setSelectId({ selectId: textfield.id }));
+          <Textfield
+            key={i}
+            textfield={textfield}
+            onSelect={() => {
+              dispatch(setSelectId({ selectId: textfield.id }));
+              dispatch(selectTool(ACTIONS.SELECT));
+            }}
+            isSelected={selectId === textfield.id}
+            onDragMove={(e) => {
+              console.log(e.target.x(), e.target.y());
+            }}
+          />
+        ))}
+        {/* for circles */}
+        {circles.map(
+          (circle, i) => (
+            console.log(circle),
+            (
+              <CircleShape
+                key={i}
+                circle={circle}
+                isSelected={selectId === circle.id}
+                onSelect={() => {
+                  dispatch(setSelectId({ selectId: circle.id }));
                   dispatch(selectTool(ACTIONS.SELECT));
-                  setIsSelected(true);
                 }}
-                onDblClick={handleDoubleClick}
-                onDblTap={handleDoubleClick}
+                strokeColor={strokeColor}
+                fillColor={fillColor}
                 onDragMove={(e) => {
                   console.log(e.target.x(), e.target.y());
                 }}
               />
-            )}
-            {isSelected && !isEditing && <Transformer ref={transformerref} />}
-            {isEditing && (
-              <Html
-                divProps={{
-                  style: {
-                    position: "absolute",
-                    top: textfield.y + "px",
-                    left: textfield.x + "px",
-                    width: "0px",
-                    zIndex: "9999",
-                  },
-                }}
-              >
-                <input
-                  ref={inputRef}
-                  className="bg-transparent border-none outline-none text-white text-[21px] font-Poppins"
-                  onChange={(e) => setText(e.target.value)}
-                  onBlur={() => {
-                    setIsEditing(false);
-                  }}
-                  placeholder="Enter text here..."
-                  value={text}
-                  autoFocus
-                />
-              </Html>
-            )}
-          </React.Fragment>
+            )
+          )
+        )}
+        {/* for arrows */}
+        {arrows.map((arrow, i) => (
+          <ArrowShape
+            key={i}
+            arrow={arrow}
+            onSelect={() => {
+              dispatch(setSelectId({ selectId: arrow.id }));
+              dispatch(selectTool(ACTIONS.SELECT));
+            }}
+            isSelected={selectId === arrow.id}
+            strokeColor={strokeColor}
+            fillColor={fillColor}
+            onDragMove={(e) => {
+              console.log(e.target.x(), e.target.y());
+            }}
+          />
+        ))}
+        {/* for free drawing */}
+        {freeDraw.map((line, i) => (
+          <Line
+            key={i}
+            points={line}
+            stroke={strokeColor}
+            strokeWidth={2}
+            tension={0.5}
+            lineCap="round"
+            globalCompositeOperation={
+              selectId === "freeDraw" ? "source-over" : "destination-over"
+            }
+          />
         ))}
       </Layer>
     </Stage>
