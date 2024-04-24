@@ -9,10 +9,12 @@ import { Html } from "react-konva-utils";
 import Textfield from "../text/Textfield.jsx";
 import CircleShape from "../circle/CircleShape.jsx";
 import ArrowShape from "../arrow/ArrowShape.jsx";
+import randomId from "random-id";
 
 function Board() {
   const { toolType } = useSelector((state) => state.toolbar);
   const { selectId } = useSelector((state) => state.selectShape);
+  console.log(selectId);
   const { borderColor, fillColor } = useSelector((state) => state.color);
   const dispatch = useDispatch();
   const [rectangles, setRectangles] = React.useState([]);
@@ -54,7 +56,7 @@ function Board() {
         setRectangles((rectangles) => [
           ...rectangles,
           {
-            id: rectangles.length + 1,
+            id: randomId(10, "aA0"),
             x,
             y,
             width: 0,
@@ -66,7 +68,7 @@ function Board() {
         setTexts((texts) => [
           ...texts,
           {
-            id: texts.length + 1,
+            id: randomId(10, "aA0"),
             x,
             y,
             text: "Double click to edit",
@@ -80,7 +82,7 @@ function Board() {
         setCircles((circles) => [
           ...circles,
           {
-            id: circles.length + 1,
+            id: randomId(10, "aA0"),
             x,
             y,
             radiusX: 0,
@@ -93,7 +95,7 @@ function Board() {
         setArrows((arrows) => [
           ...arrows,
           {
-            id: arrows.length + 1,
+            id: randomId(10, "aA0"),
             x,
             y,
             points: [0, 0, 0, 0],
@@ -197,7 +199,7 @@ function Board() {
             strokeColor={strokeColor}
             fillColor={fillColor}
             onDragMove={(e) => {
-              console.log(e.target.x(), e.target.y());
+              // console.log(e.target.x(), e.target.y());
             }}
           />
         ))}
@@ -212,14 +214,13 @@ function Board() {
             }}
             isSelected={selectId === textfield.id}
             onDragMove={(e) => {
-              console.log(e.target.x(), e.target.y());
+              // console.log(e.target.x(), e.target.y());
             }}
           />
         ))}
         {/* for circles */}
         {circles.map(
           (circle, i) => (
-            console.log(circle),
             (
               <CircleShape
                 key={i}
@@ -232,7 +233,7 @@ function Board() {
                 strokeColor={strokeColor}
                 fillColor={fillColor}
                 onDragMove={(e) => {
-                  console.log(e.target.x(), e.target.y());
+                  // console.log(e.target.x(), e.target.y());
                 }}
               />
             )
@@ -251,7 +252,7 @@ function Board() {
             strokeColor={strokeColor}
             fillColor={fillColor}
             onDragMove={(e) => {
-              console.log(e.target.x(), e.target.y());
+              // console.log(e.target.x(), e.target.y());
             }}
           />
         ))}
