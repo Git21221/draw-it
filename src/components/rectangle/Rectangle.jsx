@@ -33,9 +33,9 @@ function Rectangle({
         height={rectangle.height}
         width={rectangle.width}
         draggable="true"
-        onClick={onSelect}
+        onClick={() => onSelect(rectangle.id)}
         onTap={onSelect}
-        onMouseUp={onSelect}
+        onMouseUp={() => onSelect(rectangle.id)}
         onTouchEnd={onSelect}
         onDragMove={onDragMove}
       />
